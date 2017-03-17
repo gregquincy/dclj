@@ -14,7 +14,6 @@ from django.contrib.auth.models import User
 class Activity(models.Model):
 
     class Meta:
-        managed = False
         db_table = 'activity'
 
 
@@ -23,7 +22,6 @@ class ActivityField(models.Model):
     id_field = models.ForeignKey('Field', models.DO_NOTHING, db_column='id_field', blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'activity__field'
 
 
@@ -31,7 +29,6 @@ class Field(models.Model):
     label = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'field'
 
 
@@ -41,7 +38,6 @@ class Media(models.Model):
     location = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'media'
 
 
@@ -49,7 +45,6 @@ class MediaType(models.Model):
     label = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'media_type'
 
 
@@ -59,7 +54,6 @@ class Report(models.Model):
     media = models.ForeignKey(Media, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'report'
 
 
@@ -69,7 +63,6 @@ class ReportActivityField(models.Model):
     payload = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'report__activity__field'
         unique_together = (('id_report', 'id_activity_field'),)
 
