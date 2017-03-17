@@ -8,6 +8,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Activity(models.Model):
@@ -27,7 +28,7 @@ class ActivityField(models.Model):
 
 
 class Field(models.Model):
-    label = models.CharField(max_length=-1, blank=True, null=True)
+    label = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -36,8 +37,8 @@ class Field(models.Model):
 
 class Media(models.Model):
     media_type = models.ForeignKey('MediaType', models.DO_NOTHING, blank=True, null=True)
-    name = models.CharField(max_length=-1, blank=True, null=True)
-    location = models.CharField(max_length=-1, blank=True, null=True)
+    name = models.CharField(max_length=255, blank=True, null=True)
+    location = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -45,7 +46,7 @@ class Media(models.Model):
 
 
 class MediaType(models.Model):
-    label = models.CharField(max_length=-1, blank=True, null=True)
+    label = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -53,7 +54,7 @@ class MediaType(models.Model):
 
 
 class Report(models.Model):
-    user = models.ForeignKey('User', models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
     activity = models.ForeignKey(Activity, models.DO_NOTHING, blank=True, null=True)
     media = models.ForeignKey(Media, models.DO_NOTHING, blank=True, null=True)
 
@@ -65,20 +66,10 @@ class Report(models.Model):
 class ReportActivityField(models.Model):
     id_report = models.IntegerField()
     id_activity_field = models.ForeignKey(ActivityField, models.DO_NOTHING, db_column='id_activity__field')  # Field renamed because it contained more than one '_' in a row.
-    payload = models.CharField(max_length=-1, blank=True, null=True)
+    payload = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'report__activity__field'
         unique_together = (('id_report', 'id_activity_field'),)
 
-
-class User(models.Model):
-    login = models.CharField(max_length=-1, blank=True, null=True)
-    password = models.CharField(max_length=-1, blank=True, null=True)
-    display_name = models.CharField(max_length=-1, blank=True, null=True)
-    settings = models.TextField(blank=True, null=True)  # This field type is a guess.
-
-    class Meta:
-        managed = False
-        db_table = 'user'
