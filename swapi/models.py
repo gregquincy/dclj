@@ -7,7 +7,7 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from __future__ import unicode_literals
 
-from django.db import models
+from django.contrib.gis.db import models
 from django.contrib.auth.models import User
 
 
@@ -49,9 +49,10 @@ class MediaType(models.Model):
 
 
 class Report(models.Model):
-    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(User, models.DO_NOTHING, related_name='reports', blank=True, null=True)
     activity = models.ForeignKey(Activity, models.DO_NOTHING, blank=True, null=True)
     media = models.ForeignKey(Media, models.DO_NOTHING, blank=True, null=True)
+    pos = models.PointField()
 
     class Meta:
         db_table = 'report'
