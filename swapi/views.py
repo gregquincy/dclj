@@ -6,7 +6,10 @@ from rest_framework.response import Response
 from .serializers import UserSerializer, GroupSerializer, ReportSerializer, Signup
 from .models import Report
 
+from datetime import date
+
 from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.gis.measure import D
 
 
 class UserCreate(generics.CreateAPIView):
@@ -55,6 +58,12 @@ class ReportViewSet(viewsets.ModelViewSet):
         if request.data.get('lon') and request.data.get('lat'):
             ptn = GEOSGeometry('POINT('+request.data.get('lon')+ ' '+request.data.get('lat')+')', 4326)
 
-            queryset = Report.objects.filter(pos__distance_lte=(pnt, D(km=7)))
+            queryset = Report.objects.filter(date__date=date.today(), pos__distance_lte=(ptn, D(km=7)))
+            serializer = self.serializer_class(queryset, many=True)
+            return Response(serializer.data)
+
+        else:
+            content = {"The following objects are needed":{"lat":"Floating lattitude point", "lon":"Floatting longitude point"}}
+            return Response(content, status=418)
 
 

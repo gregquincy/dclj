@@ -23,6 +23,7 @@ from swapi import views
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
+router.register(r'reports', views.ReportViewSet)
 
 urlpatterns = [
     url(r'^users/create/', views.UserCreate.as_view()),
