@@ -53,6 +53,7 @@ class Report(models.Model):
     activity = models.ForeignKey(Activity, models.DO_NOTHING, blank=True, null=True)
     media = models.ForeignKey(Media, models.DO_NOTHING, blank=True, null=True)
     pos = models.PointField()
+    date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = 'report'
