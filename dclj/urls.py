@@ -17,6 +17,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 from rest_framework import routers
+from rest_framework.authtoken import views as tokenViews
 
 from swapi import views
 
@@ -29,5 +30,6 @@ urlpatterns = [
     url(r'^users/create/', views.UserCreate.as_view()),
     url(r'^', include(router.urls)),
     url(r'^admin/', admin.site.urls),
-    url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
+#    url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^auth/', tokenViews.obtain_auth_token),
 ]

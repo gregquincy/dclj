@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, generics, status
 from rest_framework.response import Response
+from rest_framework.authtoken.models import Token
 from .serializers import UserSerializer, GroupSerializer, ReportSerializer, Signup
 from .models import Report
 
@@ -23,6 +24,9 @@ class UserCreate(generics.CreateAPIView):
         deserializer.is_valid(raise_exception = True)
 
         saved = self.perform_create(deserializer)
+
+        Token.objects.create(user=saved)
+
         serializer = self.serializer_class(saved, context={'request': request})
 
         headers = self.get_success_headers(serializer.data)
