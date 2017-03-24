@@ -58,9 +58,15 @@ class ReportViewSet(viewsets.ModelViewSet):
     queryset = Report.objects.all()
     serializer_class = ReportSerializer
 
+    lookup_field = "lon"
+
     def list(self, request):
-        if request.data.get('lon') and request.data.get('lat'):
-            ptn = GEOSGeometry('POINT('+request.data.get('lon')+ ' '+request.data.get('lat')+')', 4326)
+
+        latt = float(request.query_params.get('lat'))
+        long = float(request.query_params.get('lon'))
+
+        if latt != None and long != None:
+            ptn = GEOSGeometry('POINT('+str(long)+ ' '+str(latt)+')', 4326)
 
             queryset = Report.objects.filter(date__date=date.today(), pos__distance_lte=(ptn, D(km=7)))
             serializer = self.serializer_class(queryset, many=True)
