@@ -1,15 +1,16 @@
 from django.shortcuts import render
 
 from django.contrib.auth.models import User, Group
-from rest_framework import viewsets, generics, status
+from rest_framework import viewsets, generics, status, mixins
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
+from rest_framework.pagination import PageNumberPagination
 from .serializers import UserSerializer, GroupSerializer, ReportSerializer, Signup
 from .models import Report
 
 from datetime import date
 
-from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 
 
@@ -51,14 +52,16 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
 
-class ReportViewSet(viewsets.ModelViewSet):
+class ReportViewSet(viewsets.ModelViewSet, mixins.ListModelMixin):
     """
         Get reports
     """
     queryset = Report.objects.all()
     serializer_class = ReportSerializer
+    pagination_class = PageNumberPagination
 
-    lookup_field = "lon"
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
     def list(self, request):
 
@@ -66,11 +69,16 @@ class ReportViewSet(viewsets.ModelViewSet):
         long = float(request.query_params.get('lon'))
 
         if latt != None and long != None:
-            ptn = GEOSGeometry('POINT('+str(long)+ ' '+str(latt)+')', 4326)
+            ptn = Point(long, latt, srid=4326)
 
             queryset = Report.objects.filter(date__date=date.today(), pos__distance_lte=(ptn, D(km=7)))
-            serializer = self.serializer_class(queryset, many=True)
-            return Response(serializer.data)
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = self.serializer_class(page, many=True, context={'request': request})
+                return self.get_paginated_response(serializer.data)
+            else:
+                serializer = self.serializer_class(queryset, many=True, context={'request':request})
+                return Response(serializer.data)
 
         else:
             content = {"The following objects are needed":{"lat":"Floating lattitude point", "lon":"Floatting longitude point"}}
