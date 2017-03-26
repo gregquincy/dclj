@@ -16,6 +16,9 @@ class Activity(models.Model):
     class Meta:
         db_table = 'activity'
 
+    def __str__(self):
+        return self.activityfield_set.all()[0].id_field.label
+
 
 class ActivityField(models.Model):
     id_activity = models.ForeignKey(Activity, models.DO_NOTHING, db_column='id_activity', blank=True, null=True)
