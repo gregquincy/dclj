@@ -66,7 +66,7 @@ class ActivitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ActivityField
-        fields = ('id', 'id_field', 'id_activity')
+        fields = ('id_field', 'id_activity')
 
 
 class Signup(serializers.ModelSerializer):
