@@ -5,8 +5,8 @@ from rest_framework import viewsets, generics, status, mixins
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.pagination import PageNumberPagination
-from .serializers import UserSerializer, GroupSerializer, ReportSerializer, Signup
-from .models import Report
+from .serializers import UserSerializer, GroupSerializer, ReportSerializer, Signup, ActivitySerializer
+from .models import Report, Field, Activity, ActivityField
 
 from datetime import date
 
@@ -85,3 +85,6 @@ class ReportViewSet(viewsets.ModelViewSet, mixins.ListModelMixin):
             return Response(content, status=418)
 
 
+class ActivityViewSet(viewsets.ModelViewSet):
+    queryset = ActivityField.objects.all()
+    serializer_class = ActivitySerializer

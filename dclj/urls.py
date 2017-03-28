@@ -25,6 +25,8 @@ router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 router.register(r'reports', views.ReportViewSet)
+router.register(r'activities', views.ActivityViewSet)
+
 
 urlpatterns = [
     url(r'^users/create/', views.UserCreate.as_view()),

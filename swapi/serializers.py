@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 
-from .models import Report, Activity
+from .models import Report, Activity, ActivityField, Field
 
 from django.core.exceptions import SuspiciousOperation
 from django.contrib.gis.geos import Point
@@ -16,6 +16,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
         fields = ('url', 'name')
+
 
 class ActivityRelatedField(serializers.RelatedField):
     queryset = Activity.objects.all()
@@ -46,12 +47,27 @@ class GeoPointField(serializers.Field):
 
 
 class ReportSerializer(serializers.ModelSerializer):
-    #activity = serializers.StringRelatedField(many=False)
     activity = ActivityRelatedField(many=False)
     pos = GeoPointField()
     class Meta:
         model = Report
         fields = ('pos', 'activity',)
+
+
+class ActivitySerializer(serializers.ModelSerializer):
+    id_field = serializers.SlugRelatedField(
+        many=False,
+        read_only=True,
+        slug_field='label'
+     )
+
+    id_activity = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
+
+
+    class Meta:
+        model = ActivityField
+        fields = ('id', 'id_field', 'id_activity')
+
 
 class Signup(serializers.ModelSerializer):
 
